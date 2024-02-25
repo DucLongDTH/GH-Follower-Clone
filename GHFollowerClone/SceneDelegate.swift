@@ -30,6 +30,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         return tabbar
     }
     
+    func configureNavigationBar() {
+        UINavigationBar.appearance().tintColor  = .systemGreen
+    }
+    
     func createSearchNC() -> UINavigationController {
         let searchNC =  SearchVC()
         searchNC.title = "Search"
