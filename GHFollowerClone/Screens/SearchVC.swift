@@ -20,6 +20,7 @@ class SearchVC: UIViewController {
         view.backgroundColor = UIColor.systemBackground
         configuration()
         dissmisKeyboardAction()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
