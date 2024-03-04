@@ -7,8 +7,12 @@
 
 import Foundation
 
-struct Follower : Codable {
+struct Follower : Codable, Hashable {
     var name: String
     var imageUrl: String
     var followerNumber: Int
+    
+    func hash(into hasher: inout Hasher) {
+            hasher.combine(name)
+    }
 }
