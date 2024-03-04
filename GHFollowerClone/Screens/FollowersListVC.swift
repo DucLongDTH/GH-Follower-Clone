@@ -15,13 +15,13 @@ class FollowersListVC: UIViewController {
         view.backgroundColor = .systemBackground
         navigationController?.navigationBar.prefersLargeTitles = true
         
-        NetworkManager.shared.getFollowers(page: 0) { (followers, errorMess) in
-            guard let followers = followers else {
-                self.presentGFAlertMainThread(title: "Error Call API", message: errorMess!.rawValue, buttonTitle: "OK")
-                return
+        NetworkManager.shared.getFollowers(page: 0) { result in
+            switch result {
+            case .success(let followers):
+                print(followers)
+            case .failure(let error):
+                self.presentGFAlertMainThread(title: "Error Call API", message: error.rawValue, buttonTitle: "OK")
             }
-            print("Followers.count = \(followers.count)")
-            print("Followers.detail: \(followers)")
         }
     }
     
