@@ -17,12 +17,14 @@ class FollowersListVC: UIViewController {
     var collectionView: UICollectionView!
     var dataSource: UICollectionViewDiffableDataSource<Section,Follower>!
     var listFollowers: [Follower] = []
+    var page = 0
+    var hasMoreValue = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configureViewController()
         configureCollectionView()
-        getFollowers()
+        getFollowers(page: page)
         configureDataSource()
     }
     
@@ -37,31 +39,19 @@ class FollowersListVC: UIViewController {
     }
     
     func configureCollectionView(){
-        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createThreeColumnFlowLayout())
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UIHelper.createThreeColumnFlowLayout(view: view))
         view.addSubview(collectionView)
         collectionView.register(FollowerCell.self, forCellWithReuseIdentifier: FollowerCell.reuseID)
-        
+        collectionView.delegate = self
     }
     
-    func createThreeColumnFlowLayout() -> UICollectionViewLayout {
-        let width                                   = view.bounds.width
-        let padding: CGFloat                        = 12
-        let minimumItemSpacing: CGFloat             = 10
-        let availableWidth = width - (padding * 2) - (minimumItemSpacing * 2)
-        let itemWidth = availableWidth / 3
-        
-        let flowLayout = UICollectionViewFlowLayout()
-        flowLayout.sectionInset = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
-        flowLayout.itemSize = CGSize(width: itemWidth, height: itemWidth + 40)
-        
-        return flowLayout
-    }
-    
-    func getFollowers(){
-        NetworkManager.shared.getFollowers(page: 0) { result in
+    func getFollowers(page: Int){
+        NetworkManager.shared.getFollowers(page: page, username: username) {[weak self] result in
+            guard let self = self else { return }
+            
             switch result {
             case .success(let followers):
-                self.listFollowers = followers
+                self.listFollowers.append(contentsOf: followers)
                 self.updateData()
             case .failure(let error):
                 self.presentGFAlertMainThread(title: "Error Call API", message: error.rawValue, buttonTitle: "OK")
@@ -85,6 +75,24 @@ class FollowersListVC: UIViewController {
         DispatchQueue.main.async {
             self.dataSource.apply(snapshot, animatingDifferences: true)
         }
+    }
+}
+
+extension FollowersListVC: UICollectionViewDelegate {
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        let offsetY                 = scrollView.contentOffset.y
+        let contentHeight           = scrollView.contentSize.height
+        let height                  = scrollView.frame.size.height
         
+        if(offsetY < contentHeight - height) {
+            if(page >= 1) {
+                hasMoreValue = false
+                return
+            } else {
+                page += 1
+            }
+            getFollowers(page: page)
+        }
     }
 }

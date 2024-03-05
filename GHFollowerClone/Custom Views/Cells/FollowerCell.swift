@@ -23,22 +23,21 @@ class FollowerCell: UICollectionViewCell {
     
     func set(follower:Follower){
         usernameLabel.text = follower.name
+        avtImageView.downloadImage(urlString: follower.imageUrl)
     }
     
     private func configure() {
-//        addSubview(avtImageView)
+        addSubview(avtImageView)
         addSubview(usernameLabel)
         let padding: CGFloat = 8
         
         NSLayoutConstraint.activate([
-//            avtImageView.topAnchor.constraint(equalTo: topAnchor, constant: padding),
-//            avtImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding),
-//            avtImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding),
-//            avtImageView.heightAnchor.constraint(equalToConstant: 80),
-//            avtImageView.widthAnchor.constraint(equalToConstant: 80),
-//            avtImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            avtImageView.topAnchor.constraint(equalTo: topAnchor, constant: padding),
+            avtImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding),
+            avtImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding),
+            avtImageView.heightAnchor.constraint(equalTo: avtImageView.widthAnchor),
                         
-            usernameLabel.topAnchor.constraint(equalTo: topAnchor, constant: 12),
+            usernameLabel.topAnchor.constraint(equalTo: avtImageView.bottomAnchor, constant: 12),
             usernameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding),
             usernameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding),
             usernameLabel.heightAnchor.constraint(equalToConstant: 20),

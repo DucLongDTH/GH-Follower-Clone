@@ -5,18 +5,23 @@
 //  Created by DucLong on 28/02/2024.
 //
 
-import Foundation
+import UIKit
 
 class NetworkManager {
-    static let shared = NetworkManager()
-    let baseUrl = "https://65df277bff5e305f32a19484.mockapi.io/api/test/"
+    static let shared           = NetworkManager()
+    private let baseUrl                 = "https://65df277bff5e305f32a19484.mockapi.io/api/test/"
+    let cache                   = NSCache<NSString, UIImage>()
     
     private init() {}
     
-    func getFollowers(page:Int, completed: @escaping (Result<[Follower], GFError>) -> Void)  {
+    func getFollowers(page:Int, username: String , completed: @escaping (Result<[Follower], GFError>) -> Void)  {
+        if(username != "Long") {
+            completed(.success([]))
+            return
+        }
         var endpoint = ""
         if(page > 0){
-             endpoint = baseUrl + "follower"
+             endpoint = baseUrl + "follower2"
         } else {
              endpoint = baseUrl + "follower"
         }
