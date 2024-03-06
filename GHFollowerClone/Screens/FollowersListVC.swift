@@ -23,9 +23,11 @@ class FollowersListVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureViewController()
+        configureSearchController()
         configureCollectionView()
         getFollowers(page: page)
         configureDataSource()
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -60,7 +62,7 @@ class FollowersListVC: UIViewController {
                     }
                 }
                 
-                self.updateData()
+                self.updateData(list: listFollowers)
             case .failure(let error):
                 self.presentGFAlertMainThread(title: "Error Call API", message: error.rawValue, buttonTitle: "OK")
             }
@@ -76,13 +78,23 @@ class FollowersListVC: UIViewController {
         })
     }
     
-    func updateData() {
+    func updateData(list: [Follower]) {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Follower>()
         snapshot.appendSections([.main])
-        snapshot.appendItems(listFollowers)
+        snapshot.appendItems(list)
         DispatchQueue.main.async {
             self.dataSource.apply(snapshot, animatingDifferences: true)
         }
+    }
+    
+    func configureSearchController(){
+        let searchController                        = UISearchController()
+        searchController.searchResultsUpdater       = self
+        searchController.searchBar.delegate         = self
+        searchController.searchBar.placeholder      = "Search for a username"
+        searchController.obscuresBackgroundDuringPresentation = false
+        navigationItem.searchController             = searchController
+        
     }
 }
 
@@ -102,5 +114,27 @@ extension FollowersListVC: UICollectionViewDelegate {
             }
             getFollowers(page: page)
         }
+    }
+}
+
+extension FollowersListVC: UISearchResultsUpdating, UISearchBarDelegate {
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let filter = searchController.searchBar.text, !filter.isEmpty else { return }
+        
+        let filterredFollowers = listFollowers.filter {
+            $0.name.lowercased().contains(filter.lowercased())
+        }
+        if(filterredFollowers.isEmpty) {
+            DispatchQueue.main.async {
+                self.showEmptyView(message: GFError.emptyList.rawValue, view: self.view)
+            }
+        }
+        updateData(list: filterredFollowers)
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        print("Cancel Tapped")
+        updateData(list: listFollowers)
     }
 }

@@ -20,6 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
         window?.rootViewController = createTabar()
         window?.makeKeyAndVisible()
+        window?.tintColor = .systemGreen
     }
     
     func createTabar() -> UITabBarController {
@@ -32,6 +33,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func configureNavigationBar() {
         UINavigationBar.appearance().tintColor  = .systemGreen
+        UINavigationBar.appearance().barTintColor = UIColor(named: "E1354A")
     }
     
     func createSearchNC() -> UINavigationController {
