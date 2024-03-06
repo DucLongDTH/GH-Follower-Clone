@@ -12,4 +12,5 @@ enum GFError: String, Error {
     case noInternetConnection       = "Cant connect to server, check internet again"
     case invalidResponse            = "Invalid response from Server"
     case invalidData                = "Data received error"
+    case emptyList                  = "No Data Founded!"
 }

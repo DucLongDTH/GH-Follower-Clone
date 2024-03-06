@@ -53,6 +53,13 @@ class FollowersListVC: UIViewController {
             switch result {
             case .success(let followers):
                 self.listFollowers.append(contentsOf: followers)
+                
+                if(self.listFollowers.isEmpty){
+                    DispatchQueue.main.async {
+                        self.showEmptyView(message: GFError.emptyList.rawValue, view: self.view)
+                    }
+                }
+                
                 self.updateData()
             case .failure(let error):
                 self.presentGFAlertMainThread(title: "Error Call API", message: error.rawValue, buttonTitle: "OK")
